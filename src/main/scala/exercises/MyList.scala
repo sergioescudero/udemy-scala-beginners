@@ -36,7 +36,7 @@ class Cons(h: Int, t: MyList) extends MyList {
 
   def printElements: String =
     if (t.isEmpty) "" + h
-    else h + " " + t.printElements
+    else s"$h ${t.printElements}"
 }
 
 object ListTest extends App {
