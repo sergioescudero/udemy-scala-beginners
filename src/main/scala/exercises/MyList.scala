@@ -143,6 +143,7 @@ object ListTest extends App {
 
   println((listOfIntegers ++ anotherListOfIntegers).toString)
 
+  println("flatMap")
   println(listOfIntegers.flatMap(x => new Cons(x, new Cons(x + 1, Empty))).toString)
   
   println(cloneListOfIntegers == listOfIntegers)
@@ -154,5 +155,17 @@ object ListTest extends App {
   println(anotherListOfIntegers.zipWith(listOfStrings, _ + " " + _))
   println(anotherListOfIntegers.zipWith[String, String](listOfStrings, _ + " " + _))
   println(listOfIntegers.fold(0)(_+_))
+
+  //for-comprehensions
+  val combinations = for {
+    n <- listOfIntegers
+    string <- listOfStrings
+  } yield s"$n-$string"
+  println(combinations)
+  //as for-comprehensions is an expression
+  println(for {
+    n <- listOfIntegers
+    string <- listOfStrings
+  } yield s"$n-$string")
 
 }
