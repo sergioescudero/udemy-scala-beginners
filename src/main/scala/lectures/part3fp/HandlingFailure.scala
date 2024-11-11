@@ -46,6 +46,7 @@ object HandlingFailure extends App {
   /**
    * Exercise
    */
+  println("Exercise-----------------")
   val hostname = "localhost"
   val port = "8080"
   def renderHTML(page: String) = println(page)
@@ -57,23 +58,48 @@ object HandlingFailure extends App {
       else throw new RuntimeException("Connection interrupted")
     }
 
-    def getSafe(url: String): Try[String] = 
-      println("hola")
+    def getSafe(url: String): Try[String] =
       Try(get(url))
   }
 
   object HttpService {
     val random = new Random(System.nanoTime())
+
     def getConnection(host: String, port: String): Connection = {
       if (true) new Connection
       else throw new RuntimeException("Some else took the port")
     }
 
-    def getSafeConnection(host: String, port: String): Try[Connection] = Try(getConnection(host, port))
+    def getSafeConnection(host: String, port: String): Try[Connection] =
+      Try(getConnection(host, port))
 
-    // if you get the html page from the connection, print it to the console i.e. call renderHTML
-    val possibleConnection = HttpService.getSafeConnection(host = hostname, port = port)
-    val possibleHTML = possibleConnection.flatMap(connection => connection.getSafe("/home"))
-    possibleHTML.foreach(renderHTML)
   }
+  // if you get the html page from the connection, print it to the console i.e. call renderHTML
+  val possibleConnection = HttpService.getSafeConnection(host = hostname, port = port)
+  val possibleHTML = possibleConnection.flatMap(connection => connection.getSafe("/home"))
+  possibleHTML.foreach(renderHTML)
+
+  // shorthand version
+  HttpService.getSafeConnection(hostname, port)
+    .flatMap(connection => connection.getSafe("/home"))
+    .foreach(renderHTML)
+
+  // for-comprenhension version
+  for {
+    connection <- HttpService.getSafeConnection(hostname, port)
+    htmlPage   <- connection.getSafe("/home")
+  } renderHTML(htmlPage)
+
+  /*
+  try {
+    connection = HttpService.getConnection(host, port)
+    try {
+      page = connection.get("/home")
+      renderHTML(page)
+     } catch (some other exception)
+
+    } catch (exception) {
+   }
+
+   */
 }
